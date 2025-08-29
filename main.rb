@@ -1,10 +1,16 @@
 require_relative 'lib/game'
+loop do
+  game = Game.new
+  game.welcome
+  game.board_display
 
-play = Game.new
-play.welcome
-play.board_display
+  loop do
+    break if game.round
+  end
 
-while true
-  play.round
-  play.board_display
+  puts 'Play again? (y/n)'
+  answer = gets.chomp.downcase
+  break unless answer == 'y'
 end
+
+puts 'Thanks for playing!'

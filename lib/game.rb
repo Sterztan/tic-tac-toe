@@ -27,15 +27,32 @@ class Game
   def round
     @turn += 1
     @symbol = @turn.odd? ? 'X' : 'O'
-    puts '----------------------------------------------------'
-    puts " Player #{@symbol}, enter your move. (square #, e.g. 1) "
-    puts '----------------------------------------------------'
-    input = gets.chomp
-    index = input.to_i - 1
-    if board[index] == ' '
-      board[index] = @symbol
-    else
-      puts 'That square is taken. Pick again!'
+
+    loop do
+      puts '-----------------------------------------------'
+      puts " Player #{@symbol}, enter your move. (square #, e.g. 1) "
+      puts '-----------------------------------------------'
+      input = gets.chomp
+      index = input.to_i - 1
+
+      if index.between?(0, 8) && board[index] == ' '
+        board[index] = @symbol
+        board_display
+
+        if winner
+          puts "Player #{winner} wins!"
+          return true
+        elsif @turn == 9
+          puts 'A tie! Nobody wins!'
+          return true
+        else
+          return false
+        end
+
+      else
+        puts 'Invalid move. Try again!'
+        board_display
+      end
     end
   end
 
@@ -45,6 +62,16 @@ class Game
       [0, 3, 6], [1, 4, 7], [2, 5, 8], # columns
       [0, 4, 8], [2, 4, 6] # diagonals
     ]
+
+    win.each do |combo|
+      values = combo.map { |i| board[i] }
+      if values.all?('X')
+        return 'X'
+      elsif values.all?('O')
+        return 'O'
+      end
+    end
+    nil
   end
 end
 
